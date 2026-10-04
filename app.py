@@ -254,7 +254,7 @@ st.markdown(
 | Annahme | Was passiert, wenn sie verletzt ist | Wer setzt an |
 |---|---|---|
 | **Konstante Ankunftsrate** | Echte Gates haben Morgenspitzen: die Regel mit dem Tagesmittel unterschätzt die Spitze; sie muss für jeden Zeitpunkt mit der aktuellen Last angewandt werden. | **[Zeitvariable Ankünfte](https://sebastianhanisch-time-varying-arrivals-demo.streamlit.app/)** |
-| **Abfertigungsdauer exponentiell** | Halfin-Whitt gilt für beliebige Bedienzeiten nur mit angepasstem Puffer; die Streuung der Dauer geht ein. | **M/G/1, Kingman-Näherung** (Folgestück) |
+| **Abfertigungsdauer exponentiell** | Halfin-Whitt gilt für beliebige Bedienzeiten nur mit angepasstem Puffer; die Streuung der Dauer geht ein. | **[M/G/1, Kingman-Näherung](https://sebastianhanisch-mg1-kingman-demo.streamlit.app/)** |
 | **Das Ziel ist ein Anteil Wartender** | Bei absolutem Wartezeit-Ziel oder Abbruch-Ziel ist der Aufschlag nicht √a-proportional (Abschnitt oben). | kein Folgestück |
 | **Exponentielle Geduld** | Die Form der Geduld verschiebt Abbruchquote und Wartezeit nahe 100 % Auslastung (siehe erlang-a-demo). | kein Folgestück |
 | **Alle Lkw gleich wichtig** | Eilige Lkw brauchen Vorfahrt; das verschiebt Warten zwischen den Klassen. | **Prioritätsklassen** (Folgestück) |

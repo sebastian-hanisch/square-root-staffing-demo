@@ -82,7 +82,7 @@ Jede dieser Annahmen hebt ein Folgestück der Linie auf:
 | Annahme | Folgestück |
 |---|---|
 | Konstante Ankunftsrate | [Zeitvariable Ankünfte](https://github.com/sebastian-hanisch/time-varying-arrivals-demo) |
-| Abfertigungsdauer exponentiell | M/G/1, Kingman-Näherung |
+| Abfertigungsdauer exponentiell | [M/G/1, Kingman-Näherung](https://github.com/sebastian-hanisch/mg1-kingman-demo) |
 | Alle Lkw gleich wichtig | Prioritätsklassen |
 
 Kein Folgestück: Kosten-optimale Besetzung, andere Zielarten als die drei gezeigten, Form der Geduld.
