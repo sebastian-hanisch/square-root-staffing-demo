@@ -257,7 +257,7 @@ st.markdown(
 | **Abfertigungsdauer exponentiell** | Halfin-Whitt gilt für beliebige Bedienzeiten nur mit angepasstem Puffer; die Streuung der Dauer geht ein. | **[M/G/1, Kingman-Näherung](https://sebastianhanisch-mg1-kingman-demo.streamlit.app/)** |
 | **Das Ziel ist ein Anteil Wartender** | Bei absolutem Wartezeit-Ziel oder Abbruch-Ziel ist der Aufschlag nicht √a-proportional (Abschnitt oben). | kein Folgestück |
 | **Exponentielle Geduld** | Die Form der Geduld verschiebt Abbruchquote und Wartezeit nahe 100 % Auslastung (siehe erlang-a-demo). | kein Folgestück |
-| **Alle Lkw gleich wichtig** | Eilige Lkw brauchen Vorfahrt; das verschiebt Warten zwischen den Klassen. | **Prioritätsklassen** (Folgestück) |
+| **Alle Lkw gleich wichtig** | Eilige Lkw brauchen Vorfahrt; das verschiebt Warten zwischen den Klassen. | **[Prioritätsklassen](https://sebastianhanisch-priority-queue-demo.streamlit.app/)** |
 | **Kosten spielen keine Rolle** | Die kostenminimale Besetzung wählt β aus dem Verhältnis von Spurkosten und Wartekosten. | kein Folgestück |
 """
 )
