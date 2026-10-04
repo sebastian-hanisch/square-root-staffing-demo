@@ -1,5 +1,7 @@
 # Wurzel-Personalregel – wie viele Spuren braucht ein großes Gate? (Streamlit-Demo)
 
+**[→ Demo live ausprobieren](https://sebastianhanisch-square-root-staffing-demo.streamlit.app/)**
+
 Interaktive Demo zur **Wurzel-Personalregel** c = a + β·√a (Halfin-Whitt-Regime, „QED“) am Terminal-Gate. **Fünftes Stück der
 Konzepte-Linie „Warteschlangentheorie und Simulation“** im Portfolio von [Sebastian Hanisch](https://sebastianhanisch.net)
 (Operations Research und Machine Learning): ein Verfahren, ein wachsendes Beispiel, jedes Folgestück hebt genau eine Annahme auf.
@@ -79,7 +81,7 @@ Jede dieser Annahmen hebt ein Folgestück der Linie auf:
 
 | Annahme | Folgestück |
 |---|---|
-| Konstante Ankunftsrate | Zeitvariable Ankünfte |
+| Konstante Ankunftsrate | [Zeitvariable Ankünfte](https://github.com/sebastian-hanisch/time-varying-arrivals-demo) |
 | Abfertigungsdauer exponentiell | M/G/1, Kingman-Näherung |
 | Alle Lkw gleich wichtig | Prioritätsklassen |
 
