@@ -15,7 +15,8 @@ A_OPTIONS = (5, 10, 20, 50, 100, 200, 500, 1000, 2000)       # Angebot a = λ/μ
 DEFAULT_A = 100
 BETA_MIN, BETA_MAX, BETA_STEP, DEFAULT_BETA = -2.0, 3.0, 0.25, 1.0
 PATIENCE_MIN, PATIENCE_MAX, DEFAULT_PATIENCE = 1, 30, 5      # mittlere Geduld (Minuten) für Erlang A
-N_OPTIONS = (5000, 20000, 50000)                              # Lkw je Simulationslauf
+N_OPTIONS = (5000, 20000, 50000)                              # ausgewertete Lkw je Simulationslauf
+WARM_MIN = 30.0                                               # Einschwingzeit des leeren Starts (zehn mittlere Abfertigungsdauern), nicht ausgewertet
 DEFAULT_N = 20000
 SEED_MAX = 999999
 DEFAULT_SEED = 35

@@ -28,16 +28,24 @@ def gate_report(a, beta, mean_patience):
     return out
 
 
+def warmup_customers(a):
+    """Zahl der Lkw, die in der Einschwingzeit `WARM_MIN` ankommen (a·μ je Minute) und zusätzlich simuliert, aber nicht ausgewertet werden."""
+    return math.ceil(a * MU * C.WARM_MIN)
+
+
 def simulate_gate(a, c, mean_patience, n_customers, seed):
-    """Ein Simulationslauf des Gates (c Spuren, Angebot a, Geduld mit Mittel `mean_patience`): Rückgabe SimResult."""
-    return simulate(c, a * MU, MU, theta_of(mean_patience), n_customers, seed)
+    """Ein Simulationslauf des Gates (c Spuren, Angebot a, Geduld mit Mittel `mean_patience`): Rückgabe SimResult. Der Lauf startet leer;
+    die ersten `WARM_MIN` Minuten werden nicht ausgewertet (sonst läge ein großes Gate in Wartezeit, Abbruch und Auslastung weit unter
+    dem Gleichgewicht), ausgewertet werden etwa `n_customers` Lkw danach."""
+    return simulate(c, a * MU, MU, theta_of(mean_patience), n_customers + warmup_customers(a), seed, warm_time=C.WARM_MIN)
 
 
 def simulate_gate_no_abandon(a, c, n_customers, seed):
-    """Simulationslauf ohne Abbruch (nur c > a): Anteil der Wartenden und mittlere Wartezeit aus der Kiefer-Wolfowitz-Rekursion."""
+    """Simulationslauf ohne Abbruch (nur c > a): Anteil der Wartenden und mittlere Wartezeit aus der Kiefer-Wolfowitz-Rekursion, mit
+    derselben Einschwingzeit wie `simulate_gate`."""
     g, s, _ = streams(seed)
-    waits = kw_waits(c, a * MU, MU, n_customers, g, s)
-    return {"p_wait": sum(1 for w in waits if w > 0) / n_customers, "Wq": sum(waits) / n_customers}
+    waits = kw_waits(c, a * MU, MU, n_customers + warmup_customers(a), g, s, warm_time=C.WARM_MIN)
+    return {"p_wait": sum(1 for w in waits if w > 0) / len(waits), "Wq": sum(waits) / len(waits)}
 
 
 def convergence_points(a):

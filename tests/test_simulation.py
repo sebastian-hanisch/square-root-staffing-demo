@@ -23,11 +23,13 @@ def test_expovariate_has_the_right_mean_and_streams_are_distinct():
 
 def test_mini_instance_with_abandonment_by_hand(mini_streams):
     """Von Hand (siehe conftest): 2 Lkw warten (Lkw 2 und 3), einer bricht nach 1.0 ab; Wartezeiten aller Lkw 0 + 1 + 2 + 0 = 3;
-    Ende bei 7.5; beschäftigte Spuren ∫ = 3 + 1 + 2 = 6, Auslastung 0.8."""
+    Ende bei 7.5, letzte Ankunft bei 5.5; beschäftigte Spuren im Messfenster [0, 5.5]: ∫ = 3 (Lkw 1) + 1 (Lkw 3 von 4 bis 5) = 4,
+    Auslastung 4/5.5; das Auslaufen von 5.5 bis 7.5 (Lkw 4 bedient) zählt nicht mit."""
     gap, svc, pat = mini_streams
     r = S.simulate(1, 1.0, 1.0, 0.2, 4, seed=0, gap_rng=gap, svc_rng=svc, pat_rng=pat)
     assert r.n_abandoned == 1 and r.n_waited == 2 and r.wait_sum == pytest.approx(3.0)
-    assert r.end_time == pytest.approx(7.5) and r.busy_integral == pytest.approx(6.0) and r.utilisation == pytest.approx(0.8)
+    assert r.end_time == pytest.approx(7.5) and r.window == pytest.approx(5.5) and r.busy_integral == pytest.approx(4.0)
+    assert r.utilisation == pytest.approx(4.0 / 5.5)
     assert r.abandon_rate == pytest.approx(0.25) and r.share_waiting == pytest.approx(0.5) and r.mean_wait_all == pytest.approx(0.75)
 
 
@@ -37,12 +39,12 @@ def test_a_stale_abandon_deadline_after_the_last_departure_does_not_move_the_clo
     gap, svc, _ = mini_streams
     pat = ScriptedRng(exp_values=[99, 1.0, 20.0, 99])
     r = S.simulate(1, 1.0, 1.0, 0.2, 4, seed=0, gap_rng=gap, svc_rng=svc, pat_rng=pat)
-    assert r.end_time == pytest.approx(7.5) and r.utilisation == pytest.approx(0.8) and r.n_abandoned == 1
+    assert r.end_time == pytest.approx(7.5) and r.utilisation == pytest.approx(4.0 / 5.5) and r.n_abandoned == 1
 
 
 def test_handle_abandon_by_hand():
     s = S._State()
-    s.status, s.t, s.arrival_time, s.n_abandoned, s.wait_sum = ["waiting", "waiting"], 5.0, [1.0, 2.5], 0, 0.0
+    s.status, s.t, s.arrival_time, s.n_abandoned, s.wait_sum, s.warm_time = ["waiting", "waiting"], 5.0, [1.0, 2.5], 0, 0.0, 0.0
     S.handle_abandon(s, 1)
     assert s.status == ["waiting", "gone"] and s.n_abandoned == 1 and s.wait_sum == pytest.approx(2.5)
 
@@ -87,3 +89,21 @@ def test_run_without_abandonment_matches_erlang_c():
     waits = S.kw_waits(c, a * S.MU, S.MU, 200_000, g, s)
     assert sum(1 for w in waits if w > 0) / len(waits) == pytest.approx(F.erlang_c(c, a), abs=0.02)
     assert sum(waits) / len(waits) == pytest.approx(F.erlang_c_wq(c, a, S.MU), rel=0.15)
+
+
+def test_warm_up_customers_are_not_evaluated_by_hand(mini_streams):
+    """Wie die Mini-Instanz (Ankünfte bei 1 / 1.5 / 2 / 5.5), aber `warm_time` = 1.6: ausgewertet werden nur Lkw 3 und 4 (Wartezeiten 2 und 0, einer wartet,
+    keiner bricht ab: der Abbruch von Lkw 2 zählt nicht); Messfenster [1.6, 5.5] (Länge 3.9), beschäftigte Spur dort 2.4 (Lkw 1 von 1.6 bis 4) + 1 (Lkw 3) = 3.4."""
+    gap, svc, pat = mini_streams
+    r = S.simulate(1, 1.0, 1.0, 0.2, 4, seed=0, gap_rng=gap, svc_rng=svc, pat_rng=pat, warm_time=1.6)
+    assert r.n_customers == 2 and r.n_waited == 1 and r.n_abandoned == 0 and r.wait_sum == pytest.approx(2.0)
+    assert r.window == pytest.approx(3.9) and r.busy_integral == pytest.approx(3.4) and r.utilisation == pytest.approx(3.4 / 3.9)
+
+
+def test_kiefer_wolfowitz_warm_up_by_hand():
+    """Eine Spur, Ankünfte bei 1 / 2 / 3, Bedienzeiten 2.5 / 1 / 1: Wartezeiten 0 / 1.5 / 1.5; mit `warm_time` = 2 zählen nur die letzten beiden."""
+    mk = lambda: (ScriptedRng(exp_values=[1, 1, 1]), ScriptedRng(exp_values=[2.5, 1, 1]))
+    g, s = mk()
+    assert S.kw_waits(1, 1.0, 1.0, 3, g, s) == pytest.approx([0.0, 1.5, 1.5])
+    g, s = mk()
+    assert S.kw_waits(1, 1.0, 1.0, 3, g, s, warm_time=2.0) == pytest.approx([1.5, 1.5])

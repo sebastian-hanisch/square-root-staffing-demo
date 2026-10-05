@@ -70,12 +70,14 @@ def test_abandon_target_has_a_hump_and_turns_negative():
 
 
 def test_scaling_quoted_in_readme():
-    """README (Geduld 5 min): √a·P(ab) bei β = 0: 0.346–0.348 für a = 10 bis 5000; β = 1: 0.044 (a = 10) bis 0.064 (a = 5000);
+    """README (Geduld 5 min): √a·P(ab) bei β = 0: 0.346–0.348 für a = 10 bis 5000; β = 1: 0.044 (a = 10), 0.053 (a = 50), 0.067 (a = 100), 0.061 bis 0.064 (a = 500 bis 5000);
     β = −1: 0.99–1.04; β = 2: 0.006–0.007; P(warten) bei β = 1: 14.5 % (a = 10), 17.5 % (a = 1000 und 5000)."""
     zero = E.scaling_table(0.0, 5)
     assert all(0.344 < r["p_ab_scaled"] < 0.349 for r in zero)
     one = {r["a"]: r for r in E.scaling_table(1.0, 5)}
     assert one[10]["p_ab_scaled"] == pytest.approx(0.044, abs=0.0006) and one[5000]["p_ab_scaled"] == pytest.approx(0.064, abs=0.0006)
+    assert one[50]["p_ab_scaled"] == pytest.approx(0.053, abs=0.0006) and one[100]["p_ab_scaled"] == pytest.approx(0.067, abs=0.0006)
+    assert all(0.0605 < one[x]["p_ab_scaled"] < 0.0640 for x in (500, 1000, 5000))
     assert one[10]["p_wait"] == pytest.approx(0.145, abs=0.0006) and one[1000]["p_wait"] == pytest.approx(0.175, abs=0.0006)
     assert one[5000]["p_wait"] == pytest.approx(0.175, abs=0.0006)
     neg = E.scaling_table(-1.0, 5)

@@ -122,8 +122,9 @@ with st.sidebar:
                           "ein Gleichgewicht).")
     patience = st.slider("Mittlere Geduld (Minuten)", *bounds("patience_slider"), key="patience_slider",
                          help="Für die Erlang-A-Kennzahlen: nach so langer Wartezeit bricht ein Lkw im Mittel ab.")
-    n = st.select_slider("Simulierte Lkw je Lauf", options=C.N_OPTIONS, key="n_select",
-                         help="Länge des Simulationslaufs für das gewählte Gate.")
+    n = st.select_slider("Ausgewertete Lkw je Lauf", options=C.N_OPTIONS, key="n_select",
+                         help=f"Länge des Simulationslaufs für das gewählte Gate. Davor läuft eine Einschwingzeit von {C.WARM_MIN:.0f} Minuten "
+                              "(das Gate startet leer), die nicht ausgewertet wird.")
     seed = st.number_input("Zufalls-Seed", min_value=bounds("seed_input")[0], max_value=bounds("seed_input")[1],
                            step=1, key="seed_input", help="Bestimmt alle Zufallszahlen des Laufs.")
     st.button("🎲 Neuen Lauf würfeln", on_click=randomize_seed)
@@ -144,7 +145,7 @@ st.markdown("---")
 st.markdown("## 🧮 Das Gate bei c = a + β·√a")
 st.caption(
     f"Angebot a = {a}, β = {beta:.2f}: c = ⌈{a} + {beta:.2f}·√{a}⌉ = **{c} Spuren** (β effektiv {be:.2f}, Auslastung je Spur "
-    f"{C.fmt_pct(report['rho'], 1)}), 3 min Abfertigung, mittlere Geduld {patience} min, {C.fmt_int(n)} simulierte Lkw."
+    f"{C.fmt_pct(report['rho'], 1)}), 3 min Abfertigung, mittlere Geduld {patience} min, {C.fmt_int(n)} ausgewertete Lkw nach {C.WARM_MIN:.0f} min Einschwingzeit."
 )
 r1 = st.columns(3)
 r1[0].metric("Spuren c (Regel)", c)
